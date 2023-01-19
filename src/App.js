@@ -1,16 +1,9 @@
 import './App.css';
-import { useRef, useEffect, useState } from 'react';
-import Globe from 'react-globe.gl';
+import { useRef, useState, useEffect } from 'react';
+import Globe from './Globe';
+import City from './City'
 
 function App() {
-
-  const globeEl = useRef();
-
-  const [globeData, setGlobeData] = useState({
-    countries: {
-      features: []
-    },
-  });
 
   const [center, setCenter] = useState({ city: 'Bloomington', country: 'United States of America', lat: 39.165034455001894, lng: -86.52709749458336 })
 
@@ -32,77 +25,14 @@ function App() {
     { city: 'Naples', country: 'Italy', lat: 40.8535848244167, lng: 14.252422729456109 }
   ]
 
-  useEffect(() => {
-    globeEl.current.pointOfView({ lat: center.lat, lng: center.lng, altitude: 2.5 }, 1000);
-    globeEl.current.controls().enableZoom = false
-    globeEl.current.controls().enablePan = false
-    globeEl.current.controls().enableRotate = false
-  }, [center]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-        fetch(
-          "./geoData.json"
-        )
-          .then((res) => res.json())
-          .then(function (res) {
-            setGlobeData({
-              countries: res[0],
-            });
-          });
-
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const markerSvg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="50" cy="50" r="50" />
-</svg>`;
-
-  const gData = [{
-    lat: center.lat,
-    lng: center.lng,
-  }];
-
   return (
     <div className="App">
-      <div className="globe-container">
-        <Globe
-          ref={globeEl}
-          width={700}
-          height={700}
-          backgroundColor="white"
+      <Globe data={cities} center={center} setCenter={setCenter} />
 
-          polygonsData={globeData.countries.features}
-          polygonAltitude={0.01}
-          polygonSideColor={() => "transparent"}
-          polygonStrokeColor={() => "#A4B0BB"}
-          polygonCapColor={function ({ properties: d }) {
-            if (d.ADMIN == center.country) {
-              return 'red'
-            } else {
-              return 'white'
-            }
-          }}
+      <h1>Cities</h1>
 
-          htmlElementsData={gData}
-          htmlElement={d => {
-            const el = document.createElement('div');
-            el.innerHTML = markerSvg;
-            el.style.fill = 'white';
-            el.style.width = `5px`;
-            return el;
-          }}
-        />
-      </div>
-
-      {cities.map((city) => {
-        return <button onClick={() => setCenter(city)}>{city.city}</button>
+      {cities.map((city, index) => {
+        return <City key={index} setCenter={setCenter} city={city} />
       })}
 
     </div>
@@ -110,3 +40,4 @@ function App() {
 }
 
 export default App;
+

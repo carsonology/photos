@@ -2,8 +2,33 @@
   text-align: center;
 }
 
+body {
+  background-color: rgb(20, 20, 20);
+}
+
+.fixed {
+  position: fixed;
+  bottom: -5px;
+  right: -10px;
+  z-index: -1;
+}
+
 .globe-container {
-  width: 100vw;
   display: flex;
-  justify-content: center;
+  position: relative;
+  flex-flow: column nowrap;
+}
+
+.cityLabel {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: white;
+}
+
+h1 {
+  margin-bottom: 80vh;
+  color: white;
 }
