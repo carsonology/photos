@@ -1,9 +1,10 @@
 import './App.css';
 import { useRef, useEffect, useState } from 'react';
 import Globe from 'react-globe.gl';
+// import '../public/geoData.json'
 
 function GlobeComponent(props) {
-    const { data, center, setCenter } = props
+    const { center } = props
 
     const [globeData, setGlobeData] = useState({
         countries: { features: [] },
@@ -15,24 +16,30 @@ function GlobeComponent(props) {
         globeEl.current.controls().enableRotate = false
     }, [])
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
+    const fetchData = async () => {
+        try {
 
-                fetch(
-                    "./geoData.json"
-                )
-                    .then((res) => res.json())
-                    .then(function (res) {
-                        setGlobeData({
-                            countries: res[0],
-                        });
-                    });
-
-            } catch (error) {
-                console.error(error.message);
+            fetch(
+                "./geoData.json", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
             }
-        };
+            )
+                .then((res) => res.json())
+                .then(function (res) {
+                    setGlobeData({
+                        countries: res[0],
+                    });
+                });
+
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, []);
 
@@ -82,10 +89,6 @@ function GlobeComponent(props) {
                 />
                 <p className="cityLabel">{center.city}</p>
             </div>
-            {/* <p>{center.city}</p> */}
-            {/* {data.map((city) => {
-                return <button onClick={() => setCenter(city)}>{city.city}</button>
-            })} */}
         </div>
     );
 }
